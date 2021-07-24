@@ -1,2 +1,5 @@
 node_modules/
-.docker/dbdata/**/
+.docker/dbdata/**
+.docker/dumps/*
+
+!**/.gitkeep

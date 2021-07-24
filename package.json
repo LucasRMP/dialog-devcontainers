@@ -5,7 +5,9 @@
   "license": "MIT",
   "scripts": {
     "in:redis": "docker-compose exec redis redis-cli",
-    "in:mysql": "docker-compose exec mysql mysql -uroot",
+    "exec:redis": "docker-compose exec redis",
+    "in:mysql": "docker-compose exec mysql mysql -uroot --",
+    "exec:mysql": "docker-compose exec mysql",
     "up": "docker-compose up --build -d",
     "logs": "docker-compose logs -f --",
     "down": "docker-compose down"
