@@ -1,0 +1,13 @@
+{
+  "name": "@dialog/dev-containers",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "scripts": {
+    "in:redis": "docker-compose exec redis redis-cli",
+    "in:mysql": "docker-compose exec mysql mysql -uroot",
+    "up": "docker-compose up --build -d",
+    "logs": "docker-compose logs -f --",
+    "down": "docker-compose down"
+  }
+}
