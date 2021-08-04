@@ -3,6 +3,7 @@ services:
   mysql:
     container_name: mysql
     build: ./.docker/mysql
+    command: --max_allowed_packet=10G
     restart: always
     environment:
       MYSQL_ALLOW_EMPTY_PASSWORD: "true"
