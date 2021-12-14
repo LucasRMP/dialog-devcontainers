@@ -50,8 +50,11 @@ In order to restore a database dump it's necessary that the file is compressed w
 ## Steps
 
 - Copy the compressed file to `.docker/dumps`
-- Enter the mysql container
+- Create the client's database
   ```bash
-  yarn exec:mysql bash
+  yarn exec:mysql mysql -u root -e "create database dial_{clientName}_{env};"
   ```
-- Execute the usual restore command with `/dumps/<filename>` as the file path
+- Restore the database 
+  ```bash
+  yarn exec:mysql bash -c "pv -pte /dumps/{dumpName}.sql.{xz or zst} | unxz or unzstd | mysql -u root dial_{clientName}_{env}"
+  ```
