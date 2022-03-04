@@ -1,10 +1,10 @@
-version: "2"
+version: "3"
+
 services:
   mysql:
     container_name: mysql
     build: ./.docker/mysql
     command: --max_allowed_packet=10G
-    restart: always
     environment:
       MYSQL_ALLOW_EMPTY_PASSWORD: "true"
     volumes:
@@ -21,3 +21,19 @@ services:
       - ./.docker/dbdata/redis:/data
     ports:
       - "6379:6379"
+
+  admin:
+    build:
+      context: ./.docker/rails/
+      dockerfile: dev.Dockerfile
+    entrypoint: dockerize -wait tcp://mysql:3306 -timeout 40s /usr/src/entrypoint.sh
+    container_name: admin
+    ports:
+      - 3000:3000
+    volumes:
+      - /home/lucas/dev/dialog/admin/:/usr/src/app
+    depends_on:
+      - mysql
+    extra_hosts:
+      - "host.docker.internal:172.17.0.1"
+      - "lvh.me:172.17.0.1"
