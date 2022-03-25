@@ -28,7 +28,7 @@ services:
     build:
       context: ./.docker/rails/
     entrypoint: dockerize -wait tcp://mysql:3306 -timeout 40s /usr/src/entrypoint.sh
-    container_name: admin
+    container_name: dialog-admin
     ports:
       - 3000:3000
     volumes:
@@ -38,4 +38,31 @@ services:
     extra_hosts:
       - "host.docker.internal:172.17.0.1"
       - "lvh.me:172.17.0.1"
+    restart: unless-stopped
+
+  api:
+    build:
+      context: ./.docker/api/
+    entrypoint: dockerize -wait tcp://mysql:3306 -timeout 40s /usr/src/entrypoint.sh
+    container_name: dialog-api
+    ports:
+      - 4000:4000
+    volumes:
+      - $DIALOG_API_DIR:/usr/src/app
+    depends_on:
+      - mysql
+      - redis
+    restart: unless-stopped
+
+  pwa:
+    build:
+      context: ./.docker/pwa/
+    entrypoint: /usr/src/entrypoint.sh
+    container_name: dialog-pwa
+    ports:
+      - 5000:5000
+    volumes:
+      - $DIALOG_PWA_DIR:/usr/src/app
+    depends_on:
+      - api
     restart: unless-stopped
