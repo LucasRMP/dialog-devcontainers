@@ -8,4 +8,4 @@ bower install --allow-root
 rake assets:precompile --trace --verbose
 cd timeline && yarn && yarn build && cd ..
 
-rails s
+rails server -p $PORT -b 0.0.0.0

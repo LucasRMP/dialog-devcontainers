@@ -12,28 +12,30 @@ services:
       - ./.docker/dumps:/dumps
     ports:
       - "3306:3306"
+    restart: unless-stopped
 
   redis:
     container_name: redis
     image: redis:alpine
-    command: ["redis-server", "--appendonly", "yes"]
+    command: [ "redis-server", "--appendonly", "yes" ]
     volumes:
       - ./.docker/dbdata/redis:/data
     ports:
       - "6379:6379"
+    restart: unless-stopped
 
   admin:
     build:
       context: ./.docker/rails/
-      dockerfile: dev.Dockerfile
     entrypoint: dockerize -wait tcp://mysql:3306 -timeout 40s /usr/src/entrypoint.sh
     container_name: admin
     ports:
       - 3000:3000
     volumes:
-      - /home/lucas/dev/dialog/admin/:/usr/src/app
+      - $DIALOG_ADMIN_DIR:/usr/src/app
     depends_on:
       - mysql
     extra_hosts:
       - "host.docker.internal:172.17.0.1"
       - "lvh.me:172.17.0.1"
+    restart: unless-stopped

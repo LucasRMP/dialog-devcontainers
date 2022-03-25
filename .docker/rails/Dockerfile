@@ -2,6 +2,8 @@ FROM ruby:2.6.6
 
 ENV DEBIAN_FRONTEND noninteractive
 
+WORKDIR /usr/src/app
+
 RUN apt-get clean
 RUN apt-get update
 RUN apt-get install -y git curl gawk locales
@@ -47,14 +49,27 @@ RUN apt-get install -y \
   libyaml-dev \
   make \
   mariadb-client \
-  nodejs \
   ntp \
+  nodejs \
   pkg-config \
   sqlite3 \
   tzdata \
   wget \
   zlib1g-dev \
-  zstd
+  zstd \
+  curl
+
+# Setting envs for admin
+ENV S3_KEY='AKIAJROUNZGZ567DABTQ' \
+  S3_REGION='us-east-1' \
+  S3_SECRET='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' \
+  AWS_REGION='us-east-1' \
+  BUCKET_NAME='cm-dial-light-prod' \
+  OPEN_SEARCH_URL='https://search-action-logs-datcjfeouvwbvyuroxxmj4kbae.us-east-1.es.amazonaws.com/' \
+  OPEN_SEARCH_USER='zanderlan' \
+  OPEN_SEARCH_PASS='Zanderlan01@' \
+  DATABASE_URL=mysql2://root@172.17.0.1:3306/dial_meta_dev \
+  PORT=3000
 
 # timezone
 ENV TZ America/Sao_Paulo
@@ -62,23 +77,25 @@ RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
 #aha
 RUN curl https://codeload.github.com/theZiz/aha/tar.gz/0.5.1 | tar xz \
-    && cd aha-0.5.1 \
-    && make && make install
+  && cd aha-0.5.1 \
+  && make && make install
 RUN rm -rf cd aha-0.5.1
 RUN aha --version
 
 # npm packages
-RUN npm install -g bower
+RUN npm install -g bower@1.7.10
 
-# RUN gem install bundler -v 2.1.4
-RUN gem install bundler
+# gem installs
+RUN gem install bundler -v 2.3.6
+# RUN gem install mimemagic -v 0.3.7
 
 # Dockerize
 ENV DOCKERIZE_VERSION v0.6.1
 RUN wget https://github.com/jwilder/dockerize/releases/download/$DOCKERIZE_VERSION/dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz \
-    && tar -C /usr/local/bin -xzvf dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz \
-    && rm dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz
+  && tar -C /usr/local/bin -xzvf dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz \
+  && rm dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz
 
-WORKDIR /usr/src/app
 COPY ./entrypoint.sh /usr/src
 RUN chmod +x /usr/src/entrypoint.sh
+
+CMD [ "dockerize -wait tcp://mysql:3306 -timeout 40s /usr/src/entrypoint.sh" ]
