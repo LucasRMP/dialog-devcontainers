@@ -5,12 +5,16 @@
   - [Requirements](#requirements)
   - [Steps](#steps)
 
+**NOTE**: The first step is to clone the projects and set their respectively `.env` files, after that you can run this setup.
+
 # Setup
 
-- Add a environment variable with the name `DIALOG_ADMIN_DIR` pointing to the directory that you cloned your `dialog-admin` project. The suggestion is to keep the export command in your `.bashrc` or `.zshrc` file.
+- Add three environment variables with the names `DIALOG_ADMIN_DIR`, `DIALOG_API_DIR` and `DIALOG_PWA_DIR` pointing to the directory that you cloned the `dialog-admin`, `dialog-api` and `dialog-pwa` projects, respectively. The suggestion is to keep the export command in your `.bashrc` or `.zshrc` file.
 
   ```bash
-  export DIALOG_ADMIN_DIR="$HOME/your/clone/directory"
+  export DIALOG_ADMIN_DIR="$HOME/your/clone/directory/dialog-admin"
+  export DIALOG_API_DIR="$HOME/your/clone/directory/dialog-api"
+  export DIALOG_PWA_DIR="$HOME/your/clone/directory/dialog-pwa"
   ```
 
 - Add a custom entry for docker in `/etc/hosts` pointing to `127.0.0.1`
