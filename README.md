@@ -7,6 +7,12 @@
 
 # Setup
 
+- Add a environment variable with the name `DIALOG_ADMIN_DIR` pointing to the directory that you cloned your `dialog-admin` project. The suggestion is to keep the export command in your `.bashrc` or `.zshrc` file.
+
+  ```bash
+  export DIALOG_ADMIN_DIR="$HOME/your/clone/directory"
+  ```
+
 - Add a custom entry for docker in `/etc/hosts` pointing to `127.0.0.1`
 
   ```bash
@@ -21,16 +27,16 @@
 
 ## Admin
 
-- Install `libmysqlclient` so rails are able to connect to the mysql DB
+- Install `libmysqlclient` so rails are able to connect to the mysql DB (this command is **only** for Debian based distros, if you're using another, check your package installer).
 
   ```bash
   sudo apt-get install libmysqlclient-dev
   ```
 
-- At the `DATABASE_URL` entries in the file `.env`, swap all references of localhost for the custom host registered previously
+- At the `DATABASE_URL` entries in the file `.env`, swap all references of localhost for docker bridge IP (generally it's 172.17.0.1, but if yours doesn't works, refer to the [how to find your docker bridge ip](#docker-bridge)) with the 3306 (mysql default port) port.
 
   ```bash
-  sed -i 's/root@localhost/root@host.docker.internal/'
+  sed -i 's/root@localhost/root@172.17.0.1:3306/'
   ```
 
 ## API
@@ -40,6 +46,16 @@
   ```bash
   echo "DATABASE_HOST='host.docker.internal'" >> .env
   ```
+
+# Docker Bridge
+
+To find your docker bridge IP you should execute the following command:
+
+```bash
+ip addr
+```
+
+and check out the option that has the name of `docker0` (or docker in it's name). If your distro doesn't have the ip command, check out how to list your network interfaces and search for the `docker0` interface.
 
 # Dumps
 
